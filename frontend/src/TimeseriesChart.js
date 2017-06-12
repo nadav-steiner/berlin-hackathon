@@ -12,7 +12,7 @@ export default class App extends Component {
         }
     }
 
-    static componentWillMount() {
+    componentWillMount() {
         highchartsMore(ReactHighcharts.Highcharts);
     }
 
