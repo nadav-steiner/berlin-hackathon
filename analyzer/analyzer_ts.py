@@ -35,7 +35,7 @@ class Analyzer:
         # data = await request.json()
         # debug(data)
         res = await self.get_res()
-        return web.json_response(res)
+        return web.json_response(res, headers={'Access-Control-Allow-Origin': '*'})
 
     async def get_res(self):
         debug = logger.debug
