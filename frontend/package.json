@@ -43,7 +43,9 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "highcharts-more": "^0.1.2",
+    "moment": "^2.18.1",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-highcharts": "^12.0.0"
