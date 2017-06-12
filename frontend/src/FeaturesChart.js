@@ -10,39 +10,26 @@ export default class App extends Component {
     }
 
     render() {
-        const redLineSeriesList = this.props.redLinesList;
-        const nextRedLine = this.props.nextRedLine;
-        let seriesList = [{
-            name: 'Values',
-            data: this.props.blueLine,
-            color: 'blue',
-            lineWidth: 0.5,
-            enableMouseTracking: false,
-            marker: {
-                enabled: false,
-            }}];
-        seriesList = seriesList.concat(redLineSeriesList).concat(nextRedLine);
-
         const config = {
             tooltip: { enabled: false },
             chart: {
                 renderTo: 'container',
             },
             title: {
-                text: 'Data Quality'
+                text: 'Feature learning'
             },
             subtitle: {
-                text: 'Red zones are ones where the data regarding the sensors is suspected of having low quality'
+                text: 'The line is the feature progression over time'
             },
             xAxis: {
-                type: 'Time'
+                type: 'First Feature'
             },
             yAxis: {
                 title: {
-                    text: 'Amps'
+                    text: 'Second Feature'
                 },
-                min: 0,
-                max: 1
+                // min: -1,
+                // max: 1
             },
             legend: {
                 enabled: false
@@ -55,9 +42,21 @@ export default class App extends Component {
                 line: {
                     animation: false
                 },
-                turboThreshold: 10,
             },
-            series: seriesList,
+
+            series: [
+                {
+                    name: 'Values',
+                    // data: [[1,0.1],[2,0.3],[3,0.2],[4,0.7],[5,0.1]],
+                    data: this.props.featuresLine,
+                    color: 'black',
+                    lineWidth: 0.5,
+                    enableMouseTracking: false,
+                    marker: {
+                        enabled: false,
+                    }
+                },
+            ]
         };
 
         return (
