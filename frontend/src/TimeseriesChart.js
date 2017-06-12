@@ -23,6 +23,8 @@ export default class App extends Component {
             }}];
         seriesList = seriesList.concat(redLineSeriesList).concat(nextRedLine);
 
+        console.log(this.props.blueLine[this.props.blueLine.length-1]);
+
         const config = {
             tooltip: { enabled: false },
             chart: {
@@ -35,7 +37,7 @@ export default class App extends Component {
                 text: 'Red zones are ones where the data regarding the sensors is suspected of having low quality'
             },
             xAxis: {
-                type: 'Time'
+                type: 'datetime',
             },
             yAxis: {
                 title: {
@@ -54,8 +56,7 @@ export default class App extends Component {
                 },
                 line: {
                     animation: false
-                },
-                turboThreshold: 10,
+                }
             },
             series: seriesList,
         };

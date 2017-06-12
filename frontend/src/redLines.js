@@ -5,7 +5,7 @@ export function getRedLine(dataSeries) {
         color: 'red',
         lineWidth: 1,
         marker: {
-            radius: 10,
+            radius: 4,
         },
         enableMouseTracking: false,
     };

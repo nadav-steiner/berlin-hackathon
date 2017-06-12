@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import moment from 'moment';
+
 import Timeseries from './TimeseriesChart';
 import Features from './FeaturesChart';
 
 import {getRedLine} from './redLines';
 
-const DATA_QUALITY_THRESHOLD = 0.7;
+const DATA_QUALITY_THRESHOLD = 0.5;
 
 export default class Loader extends Component {
 
@@ -19,6 +21,9 @@ export default class Loader extends Component {
             nextRedLineList: [],
             blueLine: [],
             featuresLine: [],
+
+            firstDate: Date.now(),
+            lastDate: Date.now(),
 
             stopLoading: false,
         }
@@ -44,7 +49,10 @@ export default class Loader extends Component {
                 let newBlueLine = this.state.blueLine;
                 let nextLastValueWasRed = false;
 
-                const newValue = [res.data.time, res.data.value];
+
+                // let time = Date(res.data.time);
+                // const newValue = [time, res.data.value];
+                const newValue = [res.data.time * 1000, res.data.value];
                 newBlueLine = newBlueLine.concat([newValue]);
 
                 if (res.data.value < DATA_QUALITY_THRESHOLD) {
@@ -65,11 +73,11 @@ export default class Loader extends Component {
                     redLinesList: newRedLineList,
                     blueLine: newBlueLine,
                     lastValueWasRed: nextLastValueWasRed,
-
+                    lastDate: Date.now(),
                     featuresLine: newFeaturesLine,
                 });
 
-                setTimeout(this.componentWillReceiveProps.bind(this), 0.001)
+                setTimeout(this.componentWillReceiveProps.bind(this), 100)
             });
     }
 
@@ -79,7 +87,9 @@ export default class Loader extends Component {
                 <div onClick={this.toggleLoadingButtonHandler.bind(this)}>Loading toggle</div>
                 <Timeseries redLinesList={this.state.redLinesList}
                             blueLine={this.state.blueLine}
-                            nextRedLine={getRedLine(this.state.nextRedLineList)} />
+                            nextRedLine={getRedLine(this.state.nextRedLineList)}
+                            firstDate={this.state.firstDate}
+                            maxDate={this.state.maxDate} />
                 <Features featuresLine={this.state.featuresLine} />
             </div>
         );

@@ -7,11 +7,10 @@ from aiohttp import web
 logger = logging.getLogger()
 logging.basicConfig()
 logger.setLevel(10)
-ref_time = time.time()
 
 
 def get_time():
-    return time.time() - ref_time
+    return time.time()
 
 class AnalyzerConfig:
     window_len = 200
