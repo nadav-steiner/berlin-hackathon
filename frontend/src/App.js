@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Timeseries from './TimeseriesChart';
+import Loader from './Loader';
 
 export default class App extends Component {
 
@@ -10,7 +10,8 @@ export default class App extends Component {
           highlightedArea: [[22, 45, 51], [23, 24, 30], [24, 10, 16], [25, -3, 3], [26, 90, 96], [27, 21, 27], [28, 87, 93], [29, 10, 16], [30, 51, 57], [31, 75, 81], [32, 20, 26], [33, 23, 29], [34, 60, 66], [35, 92, 98], [36, 55, 61], [37, 62, 68], [38, 73, 79], [39, 90, 96], [40, 7, 13], [41, 30, 36], [42, 6, 12], [43, 58, 64], [44, 81, 87], [45, 16, 22], [46, 48, 54], [47, 55, 61], [48, 62, 68], [49, 64, 70], [50, 91, 97], [51, 82, 88], [52, 60, 66], [53, 51, 57], [54, 48, 54], [55, 1, 7], [56, 39, 45], [57, 21, 27], [58, 30, 36], [59, 92, 98],],
       };
       return (
-          <Timeseries values={config.values} highlightedArea={config.highlightedArea} />
+          <Loader/>
+          // <Timeseries values={config.values} highlightedArea={config.highlightedArea} />
       );
   }
 }
