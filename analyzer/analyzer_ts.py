@@ -97,15 +97,15 @@ class Analyzer:
             return model.maparams
 
     async def main_async(self):
-        # await self.start_server()
         asyncio.get_event_loop().create_task(self.sim_data())
-        while True:
-            await self.get_res()
-            await asyncio.sleep(.5)
+        # while True:
+        #     await self.get_res()
+        #     await asyncio.sleep(.5)
+        await self.start_server()
 
     async def start_server(self):
         app = web.Application()
-        app.router.add_get('/get1', self.get_ts)
+        app.router.add_get('/', self.get_ts)
         handler = app.make_handler()
         loop = asyncio.get_event_loop()
         try:
