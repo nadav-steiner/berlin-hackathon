@@ -21,8 +21,10 @@ SENSOR_ID = "load_sensor"
 
 logging.basicConfig(level=logging.INFO)
 
+
 def get_token():
-    output = subprocess.check_output(TOKEN_CURL_CMD, shell=True, stderr=subprocess.DEVNULL)
+    with open(os.devnull, 'w') as devnull:
+        output = subprocess.check_output(TOKEN_CURL_CMD, shell=True, stderr=devnull)
     output_str = output.decode()
     outpot_json = json.loads(output_str)
     return str(outpot_json['access_token'])
