@@ -41,7 +41,7 @@ class Analyzer(PredixWrap):
     async def show(self):
         df = pandas.DataFrame(self.data)
         for k in numpy.linspace(0, self.config.sim_time_max, 20):
-            print(self.get_vals(k))
+            print(await self.get_vals(k))
         print(df.describe())
 
     def get_dq(self, fv):
