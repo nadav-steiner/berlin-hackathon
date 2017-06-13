@@ -183,14 +183,19 @@ class Analyzer(PredixWrap):
 
 
 @click.command()
+@click.option('-p', '--port', default=None, envvar='PORT')
 @click.option('-d', '--original', is_flag=True, default=False)
-def entry(original):
+def entry(port, original):
+
     config = get_config()
     config.input = config.inputs[original]
     if original:
         config.compute_live = 0
     else:
         config.port = 8081
+    if port is not None:
+        config.port = port
+    logger.debug('port: %s', config.port)
     loop.run_until_complete(Analyzer().main_async())
 
 if __name__ == '__main__':
