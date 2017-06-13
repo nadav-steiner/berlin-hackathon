@@ -19,7 +19,43 @@ LOAD_DATA_FILE = "dataset.csv"
 
 SENSOR_ID = "load_sensor"
 
+fake_value_calculator = None
+data_generator = None
+
 logging.basicConfig(level=logging.INFO)
+
+
+class FakeValueCalculator:
+    def __init__(self, values_arr):
+        self.values_arr = values_arr
+
+    @staticmethod
+    def mean(data):
+        """Return the sample arithmetic mean of data."""
+        n = len(data)
+        if n < 1:
+            raise ValueError('mean requires at least one data point')
+        return sum(data) / n  # in Python 2 use sum(data)/float(n)
+
+    @staticmethod
+    def _ss(data):
+        """Return sum of square deviations of sequence data."""
+        c = FakeValueCalculator.mean(data)
+        ss = sum((x - c) ** 2 for x in data)
+        return ss
+
+    @staticmethod
+    def stddev(data):
+        """Calculates the population standard deviation."""
+        n = len(data)
+        ss = FakeValueCalculator._ss(data)
+        pvar = ss / n  # the population variance
+        return pvar ** 0.5
+
+    def get_fake_values_arr(self):
+        mean = self.mean(self.values_arr)
+        stddev = self.stddev(self.values_arr)
+        return [mean + random.gauss(0, 1) * stddev for i in range(len(self.values_arr))]
 
 
 def get_token():
@@ -59,19 +95,17 @@ def get_data_generator():
             yield float(value)
 
 
-def get_next_value(is_button_pressed, data_generator):
-    if is_button_pressed:
-        return 0  # random.uniform(40, 96)
-    else:
-        try:
-            return next(data_generator)
-        except StopIteration:
-            logging.WARNING("No more data - starting again")
-            data_generator = get_data_generator()
-            return next(data_generator)
+def get_next_value():
+    global data_generator
+    try:
+        return next(data_generator)
+    except StopIteration:
+        logging.warning("No more data - starting again")
+        data_generator = get_data_generator()
+        return next(data_generator)
 
 
-def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing):
+def ingest(predix_zone_id, token, datapoints_per_msg_initial, datapoints_per_msg_ongoing):
     logging.info("started ingest")
 
     if ingest.counter == 0:
@@ -93,8 +127,17 @@ def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, da
     ws = create_connection(INGEST_URL, header=headers)
 
     start_time = ts_to_predix_ts(time.time())
-    datapoints_arr = [[start_time + i, get_next_value(is_button_pressed, data_generator)] for i
-                      in range(num_datapoints_per_msg)]
+
+    global fake_value_calculator
+
+    if is_button_pressed:
+        values_arr = fake_value_calculator.get_fake_values_arr()
+    else:
+        values_arr = [get_next_value() for i in range(num_datapoints_per_msg)]
+        fake_value_calculator = FakeValueCalculator(values_arr)
+
+    datapoints_arr = [[start_time + i, values_arr[i]] for i in range(num_datapoints_per_msg)]
+
     ws.send(json.dumps(create_ingest_body(SENSOR_ID, datapoints_arr)))
     for datapoint in datapoints_arr:
         logging.info("sent ts=%s, value=%s" % (str(datapoint[0]), str(datapoint[1])))
@@ -112,12 +155,13 @@ def main():
     datapoints_per_msg_ongoing = int(sys.argv[3])
 
     token = get_token()
+    global data_generator
     data_generator = get_data_generator()
 
     ingest.counter = 0
 
     while True:
-        ingest(PREDIX_ZONE_ID, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing)
+        ingest(PREDIX_ZONE_ID, token, datapoints_per_msg_initial, datapoints_per_msg_ongoing)
         time.sleep(sleep_time)
 
 if __name__ == "__main__":

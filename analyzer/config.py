@@ -33,7 +33,6 @@ class AnalyzerConfig:
     port = 8080
     thresh = 0.6
     sim_time_max = 10
-    get_dp_n = 2000
     ws_url = 'wss://gateway-predix-data-services.run.aws-usw02-pr.ice.predix.io/v1/stream/messages'
     data_url = 'https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io/v1/datapoints'
     tags_url = 'https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io/v1/tags'
@@ -44,12 +43,13 @@ class AnalyzerConfig:
     window_step = 5
     inject_len = 50
     delta_inject = 150
-    inject_idx = 150
+    inject_idx = 100
     sim_ingest = 0
     sim_data = 0
     compute_live = 1
     skip_step = 1
     view_index_start = 0
+    get_dp_n = 1000
 
 
 class Quality:
