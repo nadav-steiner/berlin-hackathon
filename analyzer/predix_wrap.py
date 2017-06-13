@@ -24,7 +24,7 @@ class PredixWrap:
                 "tags": [
                     {
                         "name": self.tag,
-                        "order": "asc",
+                        "order": "desc",
                         "limit": n
                     }
                 ]

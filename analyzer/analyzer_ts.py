@@ -187,6 +187,8 @@ def entry(original):
     config.input = config.inputs[original]
     if original:
         config.compute_live = 0
+    else:
+        config.port = 8081
     loop.run_until_complete(Analyzer().main_async())
 
 if __name__ == '__main__':
