@@ -69,8 +69,12 @@ def get_next_value(is_button_pressed, data_generator):
 def ingest(predix_zone_id, token, data_generator, num_datapoints_per_msg):
     logging.info("started ingest")
 
-    with open(IS_BUTTON_PRESSED_FILE) as f:
-        is_button_pressed = int(f.read())
+    while True:
+        with open(IS_BUTTON_PRESSED_FILE) as f:
+            is_button_pressed_str = f.read()
+            if is_button_pressed_str in ("0", "1"):
+                is_button_pressed = int(f.read())
+                break
 
     headers = {'Predix-Zone-Id': predix_zone_id,
                'Authorization': 'Bearer ' + token,
