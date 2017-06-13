@@ -2,13 +2,13 @@
 
 More and more analytics are done on sensor data. This strengthens the need of ensuring the quality of sensor gathered data.
 
-This project aims to answer the need for reliable sensor data. We add confidence to sensor data by statistically analyzing it and setting a quality attribute for that data. The quality, together with the original measurement are written to a Predix Time Series. Predix currently has native support for a quality attribute for each measurement.
+This project aims to answer the need for reliable sensor data. We add confidence to sensor data by statistically analyzing it and setting a quality attribute for that data. The quality, together with the original measurement, are written to a Predix Time Series, leveraging Predix's native support for a quality attribute for each measurement.
 
-The statistical model we used to measure the qualit of the data is the ARMA (auto regressive moving average). The model we use is configurable and can be extended to use more elaborate models.
+The statistical model we used to measure the quality of the data is the ARMA (auto regressive moving average) model. The model we use is configurable and can be extended to use more elaborate models.
 
 In order to visualize the quality of the data, the project contains a web interface that displays a graph of the measurements. When our system recognizes low quality data it shows a red indication of low quality points. The web interface also displays a graph of the features computed for each measurement. When there is a change in the features between consecutive measurements there is a clear visual indication on the screen.
 
-In order to demonstrate the solution in real-time, we developed a simulator using Intel's Predix developer kit. The simulator represents a sensor with valid measurements from the data set provided by ESB (the data set is the load measurement from ESB's substations). This dataset already has occasional data corruption due to Gaussian noise. In order to control when data corruption happens we connected a physical button to the kit. When the button is pressed by the user - further noise is injected into the measurement.
+In order to demonstrate the solution in real-time, we developed a simulator for a sensor using Intel's Predix developer kit. The simulator represents a sensor with mostly valid measurements, and spontaneous data corruption due to Gaussian noise. In the normal state the sensor's measurements are taken from the data set provided by ESB (the data set is the load measurement from ESB's substations). In order to control when data corruption happens we connected a physical button to the kit. When the button is pressed by the user - Gaussian noise is injected into the measurement.
 
 Overall our system's architecture is as follows: 
 - The simulator ingests the data (valid or corrupted) into a Predix time series. 
