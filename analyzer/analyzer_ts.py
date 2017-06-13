@@ -27,14 +27,16 @@ class Analyzer(PredixWrap):
 
     def __init__(self):
         super().__init__()
+        self.request_index = 0
         self.index = self.config.view_index_start
+        self.last_fv = [1, 1]
 
     async def main_async(self):
-        await self.load_data()
-        await self.insert_bad_data()
-        if self.config.do_compute:
+        if not self.config.compute_live:
+            await self.load_data()
+            await self.insert_bad_data()
             await self.compute_dq()
-        await self.show()
+            await self.show()
         logger.debug('starting server')
         await self.start_server()
 
@@ -79,6 +81,7 @@ class Analyzer(PredixWrap):
         fv = [*cols[2: 4]]
         logger.debug('got vals: %s', (t, value, fv))
         res = dict(time=time.time(), value=value, fv=fv, dq=self.get_dq(fv))
+
         self.index += self.config.skip_step
         return res
 
@@ -125,7 +128,8 @@ class Analyzer(PredixWrap):
         di = self.config.delta_inject
         def inject(i):
             vals = self.data[i: i + N, 1]
-            self.data[i: i + N, 1] = vals.mean() + numpy.random.randn(N) * vals.std()
+            nf = len(vals)
+            self.data[i: i + N, 1] = vals.mean() + numpy.random.randn(nf) * vals.std()
         inject(i)
         inject(i + di)
 
@@ -144,8 +148,8 @@ class Analyzer(PredixWrap):
             else:
                 dq = self.get_dq(fv)
                 logger.debug('computed features: idx=%s, fv=%s, dq=%s', i, fv, dq)
-
-            arr = numpy.asarray([fv] * kd)
+            nf = len(self.data[i - kd: i, 2: 4])
+            arr = numpy.asarray([fv] * nf)
 
             # fill out all the missing
             self.data[i - kd: i, 2: 4] = arr
@@ -157,20 +161,32 @@ class Analyzer(PredixWrap):
             return dict(time=time.time(), value=-1, fv=[1,1], dq=1)
         logger.debug('got %s values' % len(v))
         value = v[-1]
-        try:
-            fv = self.get_feature_vector(v)
-        except ValueError:
-            fv = [1, 1]
-            dq = 1
+        print(v)
+        if self.request_index % 100 == 0:
+
+            try:
+                fv = self.get_feature_vector(v)
+            except ValueError:
+                fv = [1, 1]
         else:
-            dq = self.get_dq(fv)
-        return dict(time=time.time(), value=value, fv=fv, dq=dq)
+            fv = self.last_fv
+        dq = self.get_dq(fv)
+
+
+        fv = [*fv]
+        res = dict(time=time.time(), value=value.item(), fv=fv, dq=dq)
+        print(res)
+        self.request_index +=1
+        return res
 
 
 @click.command()
 @click.option('-d', '--original', is_flag=True, default=False)
 def entry(original):
-    get_config().input = get_config().inputs[original]
+    config = get_config()
+    config.input = config.inputs[original]
+    if original:
+        config.compute_live = 0
     loop.run_until_complete(Analyzer().main_async())
 
 if __name__ == '__main__':
