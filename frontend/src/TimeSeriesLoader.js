@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import moment from 'moment';
 
 import Timeseries from './TimeseriesChart';
 import Features from './FeaturesChart';
 
 import {getRedLine} from './redLines';
-
-const DATA_QUALITY_THRESHOLD = 0.5;
 
 export default class Loader extends Component {
 

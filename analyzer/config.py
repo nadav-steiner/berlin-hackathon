@@ -40,11 +40,11 @@ class AnalyzerConfig:
     # input = InputServiceInstance
     inputs = InputServiceInstance, ESBInstance
     input = inputs[1]
-    window_len = 200
+    window_len = 100
     window_step = 5
-    inject_len = window_len
+    inject_len = 50
     delta_inject = 150
-    inject_idx = 50
+    inject_idx = 150
     sim_ingest = 0
     sim_data = 0
     compute_live = 1
