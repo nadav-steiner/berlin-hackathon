@@ -31,7 +31,7 @@ class AnalyzerConfig:
     maxiter = 100
     host = '0.0.0.0'
     port = 8080
-    thresh = 0.1
+    thresh = 0.6
     sim_time_max = 10
     get_dp_n = 2000
     ws_url = 'wss://gateway-predix-data-services.run.aws-usw02-pr.ice.predix.io/v1/stream/messages'
