@@ -39,7 +39,7 @@ export default class Loader extends Component {
             return;
         }
 
-        axios.get('http://localhost:8080/')
+        axios.get('https://electric-flyer-analyzer.run.aws-usw02-pr.ice.predix.io/')
             .then(res => {
 
                 let newRedLineList = this.state.redLinesList;
@@ -83,7 +83,6 @@ export default class Loader extends Component {
     render() {
         return (
             <div>
-                <div onClick={this.toggleLoadingButtonHandler.bind(this)}>Loading toggle</div>
                 <Timeseries redLinesList={this.state.redLinesList}
                             blueLine={this.state.blueLine}
                             nextRedLine={getRedLine(this.state.nextRedLineList)}

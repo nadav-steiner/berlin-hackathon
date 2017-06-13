@@ -29,7 +29,7 @@ export default class App extends Component {
                 renderTo: 'container',
             },
             title: {
-                text: 'Data Quality'
+                text: 'Live Data'
             },
             subtitle: {
                 text: 'Red zones are ones where the data regarding the sensors is suspected of having low quality'
