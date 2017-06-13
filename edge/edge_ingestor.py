@@ -63,7 +63,12 @@ def get_next_value(is_button_pressed, data_generator):
     if is_button_pressed:
         return 0  # random.uniform(40, 96)
     else:
-        return next(data_generator)
+        try:
+            return next(data_generator)
+        except StopIteration:
+            logging.WARNING("No more data - starting again")
+            data_generator = get_data_generator()
+            return next(data_generator)
 
 
 def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing):
@@ -87,7 +92,8 @@ def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, da
 
     ws = create_connection(INGEST_URL, header=headers)
 
-    datapoints_arr = [[ts_to_predix_ts(time.time()), get_next_value(is_button_pressed, data_generator)] for i
+    start_time = ts_to_predix_ts(time.time())
+    datapoints_arr = [[start_time + i, get_next_value(is_button_pressed, data_generator)] for i
                       in range(num_datapoints_per_msg)]
     ws.send(json.dumps(create_ingest_body(SENSOR_ID, datapoints_arr)))
     for datapoint in datapoints_arr:
