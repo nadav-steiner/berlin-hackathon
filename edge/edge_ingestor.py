@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 from websocket import create_connection
 import os
@@ -72,8 +72,8 @@ def ingest(predix_zone_id, token, data_generator, num_datapoints_per_msg):
     while True:
         with open(IS_BUTTON_PRESSED_FILE) as f:
             is_button_pressed_str = f.read()
-            if is_button_pressed_str in ("0", "1"):
-                is_button_pressed = int(f.read())
+            if is_button_pressed_str in ("0\n", "1\n"):
+                is_button_pressed = int(is_button_pressed_str)
                 break
 
     headers = {'Predix-Zone-Id': predix_zone_id,
