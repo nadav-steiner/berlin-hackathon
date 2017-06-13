@@ -145,10 +145,10 @@ class Analyzer(PredixWrap):
                 dq = self.get_dq(fv)
                 logger.debug('computed features: idx=%s, fv=%s, dq=%s', i, fv, dq)
 
-            arr = numpy.asarray([fv] * kd)
+            arr = numpy.asarray([fv] * k)
 
             # fill out all the missing
-            self.data[i - kd: i, 2: 4] = arr
+            self.data[sl, 2: 4] = arr
 
     async def get_vals_live(self, t):
         try:

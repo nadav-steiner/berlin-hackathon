@@ -87,11 +87,16 @@ class PredixWrap:
                 return tag_list
 
     async def get_token(self):
-        url = 'https://MMEurope.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token'
-        headers = {
-            'Pragma': 'no-cache',
-            'content-type': 'application/x-www-form-urlencoded',
-            'Cache-Control': 'no-cache',
-            'authorization': 'Basic dGltZXNlcmllc19jbGllbnRfcmVhZG9ubHk6c2VjcmV0'
-        }
-        data = r'client_id=timeseries_client_readonly\r\ngrant_type=client_credentials'
+        request_dict = dict(
+            url = 'https://MMEurope.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
+            headers = {
+                'Pragma': 'no-cache',
+                'content-type': 'application/x-www-form-urlencoded',
+                'Cache-Control': 'no-cache',
+                'authorization': 'Basic dGltZXNlcmllc19jbGllbnRfcmVhZG9ubHk6c2VjcmV0'
+            },
+            data = r'client_id=timeseries_client_readonly\r\ngrant_type=client_credentials'
+        )
+        async with aiohttp.ClientSession() as session:
+            async with await session.get(**request_dict) as resp:
+                return resp.json()
