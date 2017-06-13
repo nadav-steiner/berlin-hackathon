@@ -66,8 +66,13 @@ def get_next_value(is_button_pressed, data_generator):
         return next(data_generator)
 
 
-def ingest(predix_zone_id, token, data_generator, num_datapoints_per_msg):
+def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing):
     logging.info("started ingest")
+
+    if ingest.counter == 0:
+        num_datapoints_per_msg = datapoints_per_msg_initial
+    else:
+        num_datapoints_per_msg = datapoints_per_msg_ongoing
 
     while True:
         with open(IS_BUTTON_PRESSED_FILE) as f:
@@ -89,6 +94,7 @@ def ingest(predix_zone_id, token, data_generator, num_datapoints_per_msg):
         logging.info("sent ts=%s, value=%s" % (str(datapoint[0]), str(datapoint[1])))
 
     result = ws.recv()
+    ingest.counter += 1
     logging.info("ingestion result %s" % result)
 
 
@@ -96,14 +102,16 @@ def main():
     logging.info("edge ingestor started")
 
     sleep_time = float(sys.argv[1])
-    num_datapoints_per_msg = int(sys.argv[2])
+    datapoints_per_msg_initial = int(sys.argv[2])
+    datapoints_per_msg_ongoing = int(sys.argv[3])
 
     token = get_token()
-
     data_generator = get_data_generator()
 
+    ingest.counter = 0
+
     while True:
-        ingest(PREDIX_ZONE_ID, token, data_generator, num_datapoints_per_msg)
+        ingest(PREDIX_ZONE_ID, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing)
         time.sleep(sleep_time)
 
 if __name__ == "__main__":
