@@ -148,7 +148,10 @@ class Analyzer(PredixWrap):
             self.data[i - kd: i, 2: 4] = arr
 
     async def get_vals_live(self, t):
-        v = await self.get_values_from_predix(self.config.window_len)
+        try:
+            v = await self.get_values_from_predix(self.config.window_len)
+        except:
+            return dict(time=time.time(), value=-1, fv=[1,1], dq=1)
         logger.debug('got %s values' % len(v))
         value = v[-1]
         try:
