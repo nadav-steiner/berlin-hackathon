@@ -35,6 +35,7 @@ class Analyzer(PredixWrap):
         if self.config.do_compute:
             await self.compute_dq()
         await self.show()
+        logger.debug('starting server')
         await self.start_server()
 
     async def show(self):

@@ -5,7 +5,6 @@ import logging
 import numpy
 
 from analyzer.config import get_config, Quality
-from analyzer.utils import get_time_ms_int
 
 logger = logging.getLogger().getChild('wrap')
 
@@ -39,8 +38,9 @@ class PredixWrap:
                     results = tag['results'][0]
                     values = results['values']
                     logger.debug('len: %s, got values: %s ...', len(values), values[:5])
-                except Exception:
+                except Exception as err:
                     logger.error(await resp.text())
+                    raise ValueError(err)
                 else:
                     return values
 
