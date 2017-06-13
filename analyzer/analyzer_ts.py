@@ -162,14 +162,14 @@ class Analyzer(PredixWrap):
         logger.debug('got %s values' % len(v))
         value = v[-1]
         print(v)
-        if self.request_index % 100 == 0:
+        # if self.request_index % 100 == 0
 
-            try:
-                fv = self.get_feature_vector(v)
-            except ValueError:
-                fv = [1, 1]
-        else:
-            fv = self.last_fv
+        try:
+            fv = self.get_feature_vector(v)
+        except ValueError:
+            fv = [1, 1]
+        # else:
+        #     fv = self.last_fv
         dq = self.get_dq(fv)
 
 
