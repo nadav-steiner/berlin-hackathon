@@ -117,14 +117,17 @@ class Analyzer(PredixWrap):
         return v
 
     def get_inject_idx(self):
-        return self.config.inject_idx * self.config.window_len
+        return self.config.inject_idx
 
     async def insert_bad_data(self):
         N = self.config.inject_len
         i = self.get_inject_idx()
-        vals = self.data[i: i + N, 1]
-
-        self.data[i: i + N, 1] = vals.mean() + numpy.random.randn(N) * vals.std()
+        di = self.config.delta_inject
+        def inject(i):
+            vals = self.data[i: i + N, 1]
+            self.data[i: i + N, 1] = vals.mean() + numpy.random.randn(N) * vals.std()
+        inject(i)
+        inject(i + di)
 
     async def compute_dq(self):
         k = self.config.window_len
