@@ -53,7 +53,8 @@ export default class App extends Component {
                     lineWidth: 0.5,
                     enableMouseTracking: false,
                     marker: {
-                        enabled: false,
+                        enabled: true,
+                        radius: 3,
                     }
                 },
             ]
