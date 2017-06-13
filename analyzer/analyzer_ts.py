@@ -83,6 +83,8 @@ class Analyzer(PredixWrap):
         res = dict(time=time.time(), value=value, fv=fv, dq=self.get_dq(fv))
 
         self.index += self.config.skip_step
+        if self.index >= len(tv):
+            self.index = 0
         return res
 
     async def start_server(self):
