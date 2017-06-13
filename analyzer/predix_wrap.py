@@ -4,7 +4,7 @@ import aiohttp
 import logging
 import numpy
 
-from analyzer.config import get_config, Quality
+from config import get_config, Quality
 
 logger = logging.getLogger().getChild('wrap')
 
