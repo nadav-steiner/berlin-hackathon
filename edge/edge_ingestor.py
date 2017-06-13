@@ -15,7 +15,7 @@ INGEST_URL = 'wss://gateway-predix-data-services.run.aws-usw02-pr.ice.predix.io/
 IS_BUTTON_PRESSED_FILE = "is_button_pressed"
 TOKEN_CURL_CMD = r"curl 'https://902cab2a-2aba-46ac-9457-b52e24f7b5c3.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token' -H 'Pragma: no-cache' -H 'content-type: application/x-www-form-urlencoded' -H 'Cache-Control: no-cache' -H 'authorization: Basic dXNlcjpzZWNyZXQ=' --data 'client_id=user&grant_type=client_credentials'"
 PREDIX_ZONE_ID = "cb5571c9-d0ad-4a19-a0cc-adb0ff16f136"
-LOAD_DATA_FILE = "GE JOD L4 Set.csv"
+LOAD_DATA_FILE = "dataset.csv"
 
 SENSOR_ID = "load_sensor"
 
@@ -63,7 +63,12 @@ def get_next_value(is_button_pressed, data_generator):
     if is_button_pressed:
         return 0  # random.uniform(40, 96)
     else:
-        return next(data_generator)
+        try:
+            return next(data_generator)
+        except StopIteration:
+            logging.WARNING("No more data - starting again")
+            data_generator = get_data_generator()
+            return next(data_generator)
 
 
 def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, datapoints_per_msg_ongoing):
@@ -87,7 +92,8 @@ def ingest(predix_zone_id, token, data_generator, datapoints_per_msg_initial, da
 
     ws = create_connection(INGEST_URL, header=headers)
 
-    datapoints_arr = [[ts_to_predix_ts(time.time()), get_next_value(is_button_pressed, data_generator)] for i
+    start_time = ts_to_predix_ts(time.time())
+    datapoints_arr = [[start_time + i, get_next_value(is_button_pressed, data_generator)] for i
                       in range(num_datapoints_per_msg)]
     ws.send(json.dumps(create_ingest_body(SENSOR_ID, datapoints_arr)))
     for datapoint in datapoints_arr:
