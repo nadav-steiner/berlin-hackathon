@@ -27,7 +27,7 @@ class Analyzer(PredixWrap):
 
     def __init__(self):
         super().__init__()
-        self.index = 0
+        self.index = self.config.view_index_start
 
     async def main_async(self):
         await self.load_data()
@@ -79,7 +79,7 @@ class Analyzer(PredixWrap):
         fv = [*cols[2: 4]]
         logger.debug('got vals: %s', (t, value, fv))
         res = dict(time=time.time(), value=value, fv=fv, dq=self.get_dq(fv))
-        self.index += 1
+        self.index += self.config.skip_step
         return res
 
     async def start_server(self):

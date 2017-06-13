@@ -31,7 +31,7 @@ class AnalyzerConfig:
     maxiter = 100
     host = '0.0.0.0'
     port = 8080
-    thresh = 0.1
+    thresh = 0.5
     sim_time_max = 10
     get_dp_n = 10000
     ws_url = 'wss://gateway-predix-data-services.run.aws-usw02-pr.ice.predix.io/v1/stream/messages'
@@ -43,11 +43,13 @@ class AnalyzerConfig:
     window_len = 300
     window_step = window_len // 10
     compute_live = False
-    inject_len = window_len * 3
-    inject_idx = 0
+    inject_len = window_len
+    inject_idx = 1
     sim_ingest = 0
     sim_data = 0
     do_compute = 1
+    skip_step = 1
+    view_index_start = window_len - 10
 
 
 class Quality:

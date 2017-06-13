@@ -23,8 +23,6 @@ export default class App extends Component {
             }}];
         seriesList = seriesList.concat(redLineSeriesList).concat(nextRedLine);
 
-        console.log(this.props.blueLine[this.props.blueLine.length-1]);
-
         const config = {
             tooltip: { enabled: false },
             chart: {
@@ -42,9 +40,7 @@ export default class App extends Component {
             yAxis: {
                 title: {
                     text: 'Amps'
-                },
-                min: 0,
-                max: 1
+                }
             },
             legend: {
                 enabled: false

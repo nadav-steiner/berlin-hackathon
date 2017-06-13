@@ -44,6 +44,7 @@ export default class Loader extends Component {
 
         axios.get('http://localhost:8080/')
             .then(res => {
+
                 let newRedLineList = this.state.redLinesList;
                 let nextNextRedLineList = this.state.nextRedLineList;
                 let newBlueLine = this.state.blueLine;
@@ -55,7 +56,8 @@ export default class Loader extends Component {
                 const newValue = [res.data.time * 1000, res.data.value];
                 newBlueLine = newBlueLine.concat([newValue]);
 
-                if (res.data.value < DATA_QUALITY_THRESHOLD) {
+
+                if (res.data.dq == 0) {
                     nextLastValueWasRed = true;
                     nextNextRedLineList = nextNextRedLineList.concat([newValue]);
                 } else if (this.state.lastValueWasRed) {
@@ -89,8 +91,9 @@ export default class Loader extends Component {
                             blueLine={this.state.blueLine}
                             nextRedLine={getRedLine(this.state.nextRedLineList)}
                             firstDate={this.state.firstDate}
-                            maxDate={this.state.maxDate} />
-                <Features featuresLine={this.state.featuresLine} />
+                            maxDate={this.state.maxDate}
+                            style={{height:'40%'}}/>
+                <Features featuresLine={this.state.featuresLine} style={{height:'40%'}}/>
             </div>
         );
     }
